@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantitative Risk Simulator | Tactical Allocation</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <h1 class="splash-title">Tactical Risk Simulator</h1>
+            <p class="splash-subtitle">Quantitative Portfolio Management & Political Risk Hedging</p>
+            
+            <div class="splash-disclaimer">
+                <strong>CONFIDENTIAL & PROPRIETARY</strong><br>
+                <br>
+                This simulator is an academic Proof of Concept developed by <strong>Clément Dequeker (NEOMA BS M2 CIB)</strong> for a Master's thesis defense. It models institutional portfolio resilience using historical data and dynamic slippage parameters.
+                <br><br>
+                <i>By proceeding, you acknowledge that this is a simulated environment.</i>
+            </div>
+
+            <div class="security-challenge">
+                <label for="security-input" style="color: #f8fafc; font-weight: 600; display: block; margin-bottom: 10px;">
+                    Security Check: Please answer this question to access the simulator.<br>
+                    <span style="color: #94a3b8; font-size: 14px; font-weight: 400; margin-top: 5px; display: inline-block;">What is the acronym for French government bonds?</span>
+                </label>
+                <input type="text" id="security-input" placeholder="Your answer here..." style="width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white; font-family: 'Inter', sans-serif; margin-bottom: 10px;">
+                <p id="security-message" style="color: #ef4444; font-size: 13px; min-height: 20px; margin-bottom: 15px; font-weight: bold;"></p>
+            </div>
+            
+            <button id="btn-enter" class="splash-button">ACCESS SIMULATOR →</button>
+        </div>
+    </div>
+
+    <header class="top-bar">
+        <div>
+            <div class="logo">Tactical Risk Simulator <span>v5.1</span></div>
+            <div class="subtitle">Political Risk & Diversification Breakdown Dashboard</div>
+        </div>
+        <div style="text-align: right;">
+            <div style="font-weight: 700; font-size: 16px; color: #f8fafc;">Clément Dequeker</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-top: 2px;">NEOMA Business School | Quantitative Portfolio Management</div>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        
+        <section class="control-panel">
+            <h2><span class="dot"></span> Input Parameters</h2>
+            
+            <div class="control-group">
+                <label for="crisis-selector">Stress Scenario</label>
+                <select id="crisis-selector">
+                    <option value="june2024">June 2024 (Parliament Dissolution)</option>
+                    <option value="dec2025">Dec 2025 (Budget Vote Crisis)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <h3>Strategic Allocation</h3>
+                <div class="allocation-total">Total: <span id="total-weight">100</span>%</div>
+                
+                <div class="slider-container">
+                    <label>French Equities (CAC 40) <span id="val-cac">60</span>%</label>
+                    <input type="range" id="slide-cac" min="0" max="100" value="60">
+                </div>
+                
+                <div class="slider-container">
+                    <label>French Bonds (OAT 10Y) <span id="val-oat">40</span>%</label>
+                    <input type="range" id="slide-oat" min="0" max="100" value="40">
+                </div>
+
+                <div class="slider-container">
+                    <label>European Equities (SX5E) <span id="val-stoxx">0</span>%</label>
+                    <input type="range" id="slide-stoxx" min="0" max="100" value="0">
+                </div>
+
+                <div class="slider-container">
+                    <label>German Bonds (Bund 10Y) <span id="val-bund">0</span>%</label>
+                    <input type="range" id="slide-bund" min="0" max="100" value="0">
+                </div>
+            </div>
+
+            <div class="control-group trigger-box">
+                <h3>Tactical Overlay (Flight to Quality)</h3>
+                <div class="toggle-container">
+                    <label>Enable Spread Trigger</label>
+                    <input type="checkbox" id="trigger-toggle">
+                </div>
+                <div class="slider-container">
+                    <label>OAT/Bund Spread Threshold <span id="val-spread">70</span> bps</label>
+                    <input type="range" id="slide-spread" min="40" max="100" value="70">
+                </div>
+                <div class="slider-container" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                    <label>Assets Under Management (AUM) <span id="val-aum" style="color: #3b82f6;">100</span> M€</label>
+                    <input type="range" id="slide-aum" min="10" max="1000" step="10" value="100">
+                </div>
+
+            <div class="control-group" style="border:none; background:transparent; padding:0; text-align:center; margin-top: 10px;">
+                <button id="btn-reset" class="reset-button">↺ Reset Dashboard</button>
+            </div>
+        </section>
+
+        <section class="analytics-panel">
+            
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <h4>Max Drawdown <span class="tooltip" data-tip="Formula: (Trough - Peak) / Peak. Measures the maximum absolute capital destruction during the stress window.">ℹ️</span></h4>
+                    <div class="kpi-value warning" id="kpi-mdd">-16.70%</div>
+                    <div class="kpi-label">Peak-to-Trough Loss</div>
+                </div>
+                <div class="kpi-card">
+                    <h4>Sortino Ratio <span class="tooltip" data-tip="Formula: (Rp - MAR) / Downside Deviation. Evaluates risk-adjusted return by penalizing only downside volatility (semi-variance).">ℹ️</span></h4>
+                    <div class="kpi-value neutral" id="kpi-sortino">0.45</div>
+                    <div class="kpi-label">Downside Risk Adjusted</div>
+                </div>
+                <div class="kpi-card">
+                    <h4>Peak Correlation <span class="tooltip" data-tip="Dynamic Pearson coefficient. A positive value mathematically proves the breakdown of the domestic diversification (Regime Shift).">ℹ️</span></h4>
+                    <div class="kpi-value danger" id="kpi-corr">+0.68</div>
+                    <div class="kpi-label">CAC 40 / OAT 10Y</div>
+                </div>
+            </div>
+    <div class="data-badge">
+                <span class="live-dot"></span>
+                <strong>Market Data Fidelity:</strong> High-Resolution Historical Trajectory (Bloomberg BDH) applied.
+            </div>
+
+            <div class="charts-area">
+    <div class="chart-box">
+        <canvas id="chart-equity"></canvas>
+    </div>
+    <div class="chart-box">
+        <canvas id="chart-drawdown"></canvas>
+    </div>
+    <div class="chart-box">
+        <canvas id="chart-corr"></canvas>
+    </div>
+</div>  
+
+            <div class="terminal-log">
+                <div class="terminal-header">Algorithmic Trade Log</div>
+                <div class="terminal-body" id="log-body">
+                    <p>> System initialized. Waiting for allocation parameters...</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+<script src="script.js"></script>
+</body>
+</html>
+
