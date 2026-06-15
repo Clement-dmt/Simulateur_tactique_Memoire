@@ -30,7 +30,7 @@ const crisisSelector = document.getElementById('crisis-selector');
 const allScenarios = {
     june2024: {
         name: "June 2024 (Parliament Dissolution)",
-        mdd: { cac: -16.7, oat: -15.8, stoxx: -11.4, bund: -4.5 },
+        mdd: { cac: -9.38, oat: -3.96, stoxx: -2.0, bund: 0.0 },
         sortino: { cac: 0.45, oat: 0.15, stoxx: 0.65, bund: 1.12 },
         crisisSpread: 83,
         peakCorr: 0.68,
@@ -250,7 +250,7 @@ function updateDashboard(source = 'auto') {
         let equityWeight = w_cac + w_stoxx;
         let safeBondWeight = w_bund;
         let balanceFactor = equityWeight * safeBondWeight * 4; 
-        diversificationBonus = Math.abs(baseMdd) * Math.abs(peakCorr) * 0.15 * balanceFactor; 
+        diversificationBonus = Math.abs(baseMdd) * Math.abs(peakCorr) * 0.436 * balanceFactor; 
     }
     
     let calcMdd = baseMdd + diversificationBonus - slippagePenalty; 
